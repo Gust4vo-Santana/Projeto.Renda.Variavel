@@ -53,13 +53,13 @@ namespace Infrastructure.MySql.Configuration
                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
                    .HasColumnName("date");
 
-            builder.HasOne<User>()
-                   .WithMany()
+            builder.HasOne(o => o.User)
+                   .WithMany(u => u.Operations)
                    .HasForeignKey(o => o.UserId)
                    .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne<Asset>()
-                   .WithMany()
+            builder.HasOne(o => o.Asset)
+                   .WithMany(a => a.Operations)
                    .HasForeignKey(o => o.AssetId)
                    .OnDelete(DeleteBehavior.Restrict);
         }

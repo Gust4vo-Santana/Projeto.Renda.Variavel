@@ -1,5 +1,4 @@
 ﻿using Domain.Entities;
-using Infrastructure.MySql.Configuration;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.MySql.Context
@@ -22,12 +21,7 @@ namespace Infrastructure.MySql.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AssetConfiguration).Assembly);
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(OperationConfiguration).Assembly);
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(PositionConfiguration).Assembly);
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(QuoteConfiguration).Assembly);
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserConfiguration).Assembly);
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         }
     }
 }

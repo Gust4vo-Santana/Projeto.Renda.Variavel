@@ -30,8 +30,8 @@ namespace Infrastructure.MySql.Configuration
                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
                    .HasColumnName("date");
 
-            builder.HasOne<Asset>()
-                   .WithMany()
+            builder.HasOne(q => q.Asset)
+                   .WithMany(a => a.Quotes)
                    .HasForeignKey(q => q.AssetId)
                    .OnDelete(DeleteBehavior.Restrict);
         }

@@ -39,13 +39,13 @@ namespace Infrastructure.MySql.Configuration
                    .HasColumnType("decimal(10,2)")
                    .HasColumnName("p_and_l");
 
-            builder.HasOne<User>()
-                   .WithMany()
+            builder.HasOne(p => p.User)
+                   .WithMany(u => u.Positions)
                    .HasForeignKey(p => p.UserId)
                    .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne<Asset>()
-                   .WithMany()
+            builder.HasOne(p => p.Asset)
+                   .WithMany(a => a.Positions)
                    .HasForeignKey(p => p.AssetId)
                    .OnDelete(DeleteBehavior.Restrict);
         }

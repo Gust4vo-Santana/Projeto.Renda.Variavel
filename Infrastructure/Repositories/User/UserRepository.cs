@@ -1,5 +1,6 @@
 ﻿
 using Infrastructure.MySql.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.MySql.Repositories.User
 {
@@ -12,14 +13,15 @@ namespace Infrastructure.MySql.Repositories.User
             _context = context;
         }
 
-        public Task<IDictionary<string, decimal>> GetTotalInvestedByAssetAsync(long userId, long assetId, CancellationToken cancellationToken)
+        public async Task<IDictionary<string, decimal>> GetTotalInvestedByAssetAsync(long userId, long assetId, CancellationToken cancellationToken)
         {
-            var result = _context.Positions
+            var result = await _context.Positions
                 .Where(p => p.UserId == userId && p.AssetId == assetId)
                 .GroupBy(p => p.AssetId)
-                .ToDictionary(g => g.Key.ToString(), g => g.Sum(p => p.Quantity * p.AveragePrice));
+                .ToDictionaryAsync(g => g.Key.ToString(), 
+                                   g => g.Sum(p => p.Quantity * p.AveragePrice));
 
-            return Task.FromResult<IDictionary<string, decimal>>(result);
+            return result;
         }
     }
 }
