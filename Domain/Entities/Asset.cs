@@ -2,9 +2,12 @@
 {
     public class Asset
     {
-        public long Id { get; private set; }
-        public string Code { get; private set; }
-        public string Name { get; private set; }
+        public long Id { get; set; }
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public IEnumerable<Position> Positions { get; set; }
+        public IEnumerable<Operation> Operations { get; set; }
+        public IEnumerable<Quote> Quotes { get; set; }
 
         public Asset()
         {

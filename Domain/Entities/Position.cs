@@ -8,6 +8,8 @@
         public decimal Quantity { get; set; }
         public decimal AveragePrice { get; set; }
         public decimal PAndL { get; set; }
+        public User User { get; set; }
+        public Asset Asset { get; set; }
 
         public Position()
         {

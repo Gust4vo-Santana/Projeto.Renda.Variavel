@@ -6,6 +6,8 @@
         public string Name { get; private set; }
         public string Email { get; private set; }
         public decimal BrokerageFee { get; private set; }
+        public IEnumerable<Position> Positions { get; set; }
+        public IEnumerable<Operation> Operations { get; set; }
 
         public User()
         {

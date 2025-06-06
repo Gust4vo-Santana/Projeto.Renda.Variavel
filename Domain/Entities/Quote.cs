@@ -2,10 +2,11 @@
 {
     public class Quote
     {
-        public long Id { get; private set; }
-        public long AssetId { get; private set; }
-        public decimal Price { get; private set; }
-        public DateTime Date { get; private set; }
+        public long Id { get; set; }
+        public long AssetId { get; set; }
+        public decimal Price { get; set; }
+        public DateTime Date { get; set; }
+        public Asset Asset { get; set; }
 
         public Quote()
         {

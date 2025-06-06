@@ -4,14 +4,16 @@ namespace Domain.Entities
 {
     public class Operation
     {
-        public long Id { get; private set; }
-        public long UserId { get; private set; }
-        public long AssetId { get; private set; }
-        public decimal Quantity { get; private set; }
-        public decimal Price { get; private set; }
-        public OperationType OperationType { get; private set; }
-        public decimal BrokerageFee { get; private set; }
-        public DateTime Date { get; private set; }
+        public long Id { get; set; }
+        public long UserId { get; set; }
+        public long AssetId { get; set; }
+        public decimal Quantity { get; set; }
+        public decimal Price { get; set; }
+        public OperationType OperationType { get; set; }
+        public decimal BrokerageFee { get; set; }
+        public DateTime Date { get; set; }
+        public User User { get; set; }
+        public Asset Asset { get; set; }
 
         public Operation()
         {
