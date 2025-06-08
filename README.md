@@ -66,3 +66,17 @@ Dada a necessidade de consultar rapidamente todas as operações de um usuário 
 
 Esses índices são interessantes porque as colunas utilizadas na operação de busca da query em questão são ``user_id`` e ``asset_id``. Índices nessas colunas tornarão a consulta mais rápida pois a busca sobre colunas indexadas é mais eficiente.
 
+## Testes automatizados
+
+### Testes unitários
+
+Para os testes unitários, as tecnologias utilizadas foram o XUnit e o Moq. para rodar os testes unitários, execute o comando
+```bash
+   dotnet test
+```
+
+### Testes mutantes
+
+Testes mutantes são um tipo de teste de software que tem o objetivo de garantir a qualidade de um conjunto de testes. Essa técnica consiste em aplicar mutaçõs no código para verificar se os testes existentes de fato são capazes de detectar bugs e erros de implementação.
+
+Para o caso de uso da média ponderada de preço de um ativo, uma possível mutação é alterar o cálculo, por exemplo trocando a parte final do método por ``totalQuantity / weightedSum``. Dessa forma, o retorno do método será diferente do esperado e, portanto, os testes unitários existentes devem ser capazes de detectar esse erro inserido pelo teste de mutação. Caso o teste unitário não falhasse com a versão mutada do código, o teste mutante registraria essa métrica.
