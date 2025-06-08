@@ -12,6 +12,7 @@ Responsável por expor os endpoints para consulta de:
 * Posição global de um investidor
 * Total de corretagem pago por investidor
 * Preço médio de um ativo pago por investidor
+* Preço médio global de um ativo
 * Última cotação de um ativo
 * Valor financeiro ganho pela corretora com as corretagens
 * Top 10 clientes com maiores posições
