@@ -1,4 +1,4 @@
-﻿using Application.UseCases.Quote;
+﻿using Application.UseCases.Quote.GetLatestQuote;
 using Microsoft.AspNetCore.Mvc;
 using Projeto.Renda.Variavel.WebApi.Controllers.ApiResponse;
 using Projeto.Renda.Variavel.WebApi.Dtos;
