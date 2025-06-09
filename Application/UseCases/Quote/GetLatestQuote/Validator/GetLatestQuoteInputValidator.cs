@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Application.UseCases.Quote.Validator
+namespace Application.UseCases.Quote.GetLatestQuote.Validator
 {
     public class GetLatestQuoteInputValidator : AbstractValidator<GetLatestQuoteInput>
     {

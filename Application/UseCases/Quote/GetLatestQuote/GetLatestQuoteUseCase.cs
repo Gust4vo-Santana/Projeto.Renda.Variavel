@@ -4,7 +4,7 @@ using Infrastructure.MySql.Repositories.Quote;
 using Microsoft.Extensions.Logging;
 using QuoteEntity = Domain.Entities.Quote;
 
-namespace Application.UseCases.Quote
+namespace Application.UseCases.Quote.GetLatestQuote
 {
     public class GetLatestQuoteUseCase : IGetLatestQuoteUseCase
     {

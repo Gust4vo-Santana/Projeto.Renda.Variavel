@@ -1,8 +1,8 @@
-﻿using Application.UseCases.Quote.Validator;
+﻿using Application.UseCases.Quote.GetLatestQuote.Validator;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Application.UseCases.Quote
+namespace Application.UseCases.Quote.GetLatestQuote
 {
     public static class GetLatestQuoteUseCaseInstaller
     {
