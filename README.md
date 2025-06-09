@@ -89,7 +89,7 @@ O preço médio pago pelo cliente é atualizado no momento em que uma nova opera
 
 Os testes unitários cobrem todos os use cases do projeto (33 testes no total) para assegurar que a lógica de negócio está implementada corretamente. Para rodar os testes unitários, execute:
 ```bash
-   dotnet test
+dotnet test
 ```
 
 ### Testes mutantes
