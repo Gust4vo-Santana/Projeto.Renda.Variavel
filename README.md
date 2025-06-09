@@ -1,25 +1,30 @@
 # Projeto.Renda.Variavel
 
-Este projeto tem como objetivo centralizar e organizar as informações relacionadas a operações de renda variável. A arquitetura é composta por dois serviços principais: uma Web API e um Worker Service.
+Este projeto tem como objetivo centralizar e gerenciar informações relacionadas a operações de renda variável. A arquitetura é composta por dois serviços principais: uma Web API e um Worker Service.
 
 ## Arquitetura do Projeto
 
 Web API (.NET):
-Responsável por expor os endpoints para consulta de:
+Responsável por expor os endpoints para consulta dos seguintes dados:
 
 * Total investido por ativo
-* Posição por ativo de um investidor 
+* Posição do investidor por ativo
 * Posição global de um investidor
 * Total de corretagem pago por investidor
-* Preço médio de um ativo pago por investidor
+* Preço médio pago pelo investidor por ativo
 * Preço médio global de um ativo
 * Última cotação de um ativo
 * Valor financeiro ganho pela corretora com as corretagens
 * Top 10 clientes com maiores posições
 * Top 10 clientes que mais pagaram corretagem
 
+Foram implementadas regras de fail fast em todas as rotas com input do cliente, executando a validação do payload no início da camada de aplicação para evitar desperdício de recursos com requisições inválidas.
+
 Worker Service (.NET):
-Serviço em segundo plano responsável por inserir os novos valores de cotações continuamente por meio do consumo de um tópico Kafka.
+Serviço responsável por inserir os novos valores de cotações continuamente por meio do consumo de um tópico Kafka. Foram implementadas as seguintes estratégias de resilência:
+
+* Retry: em caso de falha no processamento de uma mensagem, o worker tem uma política de retry - no momento configurada para 3 retentativas com intervalo de 1 segundo.
+* Circuit breaker: se, após as 5 retentativas, uma mensagem continuar tendo falhas no processamento, a política de circuit breaker interrompe o fluxo de requisições do worker para o banco de dados 
 
 O projeto aplica técnicas da Clean Architecture e Domain Driven Design (DDD), além de Clean Code, em sua organização interna para garantir uma estrutura clara, de fácil entendimento e manutenção.
 
