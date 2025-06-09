@@ -8,10 +8,12 @@ services:
       - "8080:8080"
     depends_on:
       - mysql
+      - seq
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=server=mysql;port=3306;user=root;password=root;database=renda_variavel
       - Kafka__BootstrapServers=kafka:9092
+      - Serilog__WriteTo__2__Args__serverUrl=http://seq
     networks:
       - app-network
 
@@ -22,10 +24,22 @@ services:
     container_name: quotes-consumer
     depends_on:
       - kafka
+      - seq
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - Kafka__BootstrapServers=kafka:9092
       - Kafka__Topic=quotes-topic
+      - Serilog__WriteTo__2__Args__serverUrl=http://seq
+    networks:
+      - app-network
+
+  seq:
+    image: datalust/seq
+    container_name: seq
+    environment:
+      - ACCEPT_EULA=Y
+    ports:
+      - "5341:80"
     networks:
       - app-network
 
