@@ -1,6 +1,6 @@
 ﻿namespace Application.Shared.Output
 {
-    public class Output<T> where T : notnull
+    public class Output<T>
     {
         public bool IsValid { get; set; }
         private T Result { get; set; }
@@ -27,6 +27,13 @@
             IsValid = false;
             ErrorMessages ??= new List<string>();
             ErrorMessages.Add(errorMessage);
+        }
+
+        public void AddErrorMessages(IEnumerable<string> errorMessages)
+        {
+            IsValid = false;
+            ErrorMessages ??= new List<string>();
+            ErrorMessages.AddRange(errorMessages);
         }
 
         public void AddMessage(string message)
