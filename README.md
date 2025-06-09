@@ -1,25 +1,34 @@
 # Projeto.Renda.Variavel
 
-Este projeto tem como objetivo centralizar e organizar as informações relacionadas a operações de renda variável. A arquitetura é composta por dois serviços principais: uma Web API e um Worker Service.
+Este projeto tem como objetivo centralizar e gerenciar informações relacionadas a operações de renda variável. A arquitetura é composta por dois serviços principais: uma Web API e um Worker Service.
 
 ## Arquitetura do Projeto
 
-Web API (.NET):
-Responsável por expor os endpoints para consulta de:
+### Web API (.NET)
+Responsável por expor os endpoints para consulta dos seguintes dados:
 
 * Total investido por ativo
-* Posição por ativo de um investidor 
+* Posição do investidor por ativo
 * Posição global de um investidor
 * Total de corretagem pago por investidor
-* Preço médio de um ativo pago por investidor
+* Preço médio pago pelo investidor por ativo
 * Preço médio global de um ativo
 * Última cotação de um ativo
 * Valor financeiro ganho pela corretora com as corretagens
 * Top 10 clientes com maiores posições
 * Top 10 clientes que mais pagaram corretagem
 
-Worker Service (.NET):
-Serviço em segundo plano responsável por inserir os novos valores de cotações continuamente por meio do consumo de um tópico Kafka.
+Foram implementadas regras de fail fast em todas as rotas com input do cliente, executando a validação do payload no início da camada de aplicação para evitar desperdício de recursos com requisições inválidas.
+
+### Worker Service (.NET)
+
+Serviço responsável por inserir os novos valores de cotações no banco de dados continuamente por meio do consumo de um tópico Kafka. Para um cenário de indisponibilidade, foram implementadas as seguintes estratégias de resilência:
+
+* Retry: em caso de falha no processamento de uma mensagem, o worker tem uma política de retry - no momento configurada para 5 retentativas com intervalo de 1 segundo.
+* Circuit breaker: se, após as 5 retentativas, uma mensagem continuar tendo falhas no processamento, a política de circuit breaker interrompe o fluxo de requisições do worker para o banco de dados por 30 segundos conforme configurado. Após esse intervalo, o circuit breaker testa uma requisição e em caso de sucesso fecha o circuito novamente. O limite de erros permitidos antes de interromper o fluxo está configurado para 5.
+* Fallback: caso a mensagem não seja processada com sucesso após todas as retentativas e ação do circuit breaker, foi implementado fallback usando um tópico Dead-Letter-Queue (DLQ). Nesse cenário, o worker publica em um tópico destinado a armazenar mensagens com erro de processamento. DLQs são úteis para evitar gargalos de processamento nos tópicos da aplicação e permitem reprocessamento das mensagens caso faça sentido.
+
+O worker também tem validação de idempotência para garantir que uma mesma mensagem não seja processada mais de uma vez e assegurar a consistência dos dados.
 
 O projeto aplica técnicas da Clean Architecture e Domain Driven Design (DDD), além de Clean Code, em sua organização interna para garantir uma estrutura clara, de fácil entendimento e manutenção.
 
