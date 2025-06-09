@@ -40,9 +40,12 @@ O projeto aplica técnicas da Clean Architecture e Domain Driven Design (DDD), a
 * Entity Framework Core
 * MySQL
 * Kafka
-* Swagger (documentação da API - OpenAPI 3.0)
+* Prometheus
+* Serilog
+* Swagger
 * Docker
 * XUnit e Moq
+* FluentValidation
 
 ---
 
@@ -57,7 +60,7 @@ O projeto aplica técnicas da Clean Architecture e Domain Driven Design (DDD), a
    ```bash
    docker compose up --build
    ```
-3. Para testar as rotas da API e acessar a documentação no formato OpenAPI 3.0, acesse ``http://localhost:8080/swagger/index.html``
+3. Para testar as rotas da API, acesse ``http://localhost:8080/swagger/index.html``
 4. A documentação no modelo OpenAPI 3.0 em json encontra-se em [doc-open-api-3-0.json](doc-open-api-3-0.json)
 
 ## Banco de dados
@@ -70,10 +73,7 @@ O script de criação do schema se encontra em [init.sql](init.sql), incluindo a
 * Para colunas de data e hora, o tipo de dado escolhido foi o ``TIMESTAMP``, que inclui data e hora com grande precisão.
 * Para as demais colunas com valores nominais, como nome e email do usuário, ou nome e código de um ativo, foi escolhido o tipo ``VARCHAR``, que permite armazenar strings de tamanho variável dentro do limite definido para cada coluna.
 
-Dada a necessidade de consultar rapidamente todas as operações de um usuário em determinado ativo nos últimos 30 dias, é vantajoso criar 2 índices na tabela ``Operations``
-
-1. Índice na coluna ``user_id``
-2. Índice na coluna ``asset_id``
+Dada a necessidade de consultar rapidamente todas as operações de um usuário em determinado ativo nos últimos 30 dias, é vantajoso criar um índice composto na tabela ``Operations`` sobre as colunas ``user_id, asset_id, date_time`` pois essas são as colunas envolvidas na cláusula ``WHERE``, logo o índice sobre elas tornaria a operação de busca muito mais eficiente. Além disso, o índice envolvendo a coluna ``date_time`` acelera o ``ORDER BY DESC`` pois faz com que os dados estejam ordenados previamente.
 
 Esses índices são interessantes porque as colunas utilizadas na operação de busca da query em questão são ``user_id`` e ``asset_id``. Índices nessas colunas tornarão a consulta mais rápida pois a busca sobre colunas indexadas é mais eficiente.
 
