@@ -122,7 +122,7 @@ namespace Projeto.Renda.Variavel.WebApi.Controllers
         }
 
         /// <summary>
-        /// Retorna os top 10 usuários que pagaram mais corretagem
+        /// Retorna os top 10 usuarios que pagaram mais corretagem
         /// </summary>
         [HttpGet("top-brokerage-fee-payers")]
         [Consumes(MediaTypeNames.Application.Json)]

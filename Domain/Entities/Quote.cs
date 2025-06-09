@@ -12,7 +12,7 @@
         {
         }
 
-        public Quote(long id, long assetId, decimal price, DateTime date)
+        public Quote(Guid id, long assetId, decimal price, DateTime date)
         {
             Id = id;
             AssetId = assetId;

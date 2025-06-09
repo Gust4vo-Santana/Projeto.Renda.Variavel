@@ -96,7 +96,7 @@ namespace Projeto.Renda.Variavel.WebApi.Controllers
         }
 
         /// <summary>
-        /// Retorna o preço medio de um ativo pago pelo usuario especificado pelo ID
+        /// Retorna o preco medio de um ativo pago pelo usuario especificado pelo ID
         /// </summary>
         [HttpGet("average-price")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -154,7 +154,7 @@ namespace Projeto.Renda.Variavel.WebApi.Controllers
         }
 
         /// <summary>
-        /// Retorna os top 10 usuários com maiores posicoes, levando em conta o valor total investido em todas as posicoes de cada cliente
+        /// Retorna os top 10 usuarios com maiores posicoes, levando em conta o valor total investido em todas as posicoes de cada cliente
         /// </summary>
         [HttpGet("top-users")]
         [Consumes(MediaTypeNames.Application.Json)]

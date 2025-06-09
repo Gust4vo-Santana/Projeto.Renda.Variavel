@@ -32,7 +32,7 @@ namespace UnitTests.Application.UseCases.Quote
         public async Task GivenValidInput_WhenExecuteAsyncIsCalled_ThenAddsNewQuote()
         {
             // Arrange
-            var input = new AddNewQuoteInput { Id = 1, AssetId = 2, Price = 100.5m, Date = DateTime.UtcNow };
+            var input = new AddNewQuoteInput { Id = Guid.NewGuid(), AssetId = 2, Price = 100.5m, Date = DateTime.UtcNow };
             _validatorMock
                 .Setup(v => v.ValidateAsync(input, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ValidationResult());
@@ -54,7 +54,7 @@ namespace UnitTests.Application.UseCases.Quote
         public async Task GivenInvalidInput_WhenExecuteAsyncIsCalled_ThenLogsErrorAndDoesNotPersistNewQuote()
         {
             // Arrange
-            var input = new AddNewQuoteInput { Id = 1, AssetId = 2, Price = -100.5m, Date = DateTime.UtcNow };
+            var input = new AddNewQuoteInput { Id = Guid.NewGuid(), AssetId = 2, Price = -100.5m, Date = DateTime.UtcNow };
             var validationFailures = new[] { new ValidationFailure("Price", "Price must be positive") };
             _validatorMock
                 .Setup(v => v.ValidateAsync(input, It.IsAny<CancellationToken>()))
@@ -81,7 +81,7 @@ namespace UnitTests.Application.UseCases.Quote
         public async Task GivenExistingQuoteId_WhenExecuteAsyncIsCalled_ThenLogsErrorAndDoesNotPersistNewQuote()
         {
             // Arrange
-            var input = new AddNewQuoteInput { Id = 1, AssetId = 2, Price = 100.5m, Date = DateTime.UtcNow };
+            var input = new AddNewQuoteInput { Id = Guid.NewGuid(), AssetId = 2, Price = 100.5m, Date = DateTime.UtcNow };
             _validatorMock
                 .Setup(v => v.ValidateAsync(input, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ValidationResult());
@@ -110,7 +110,7 @@ namespace UnitTests.Application.UseCases.Quote
         public async Task GivenRepositoryThrowsException_WhenExecuteAsyncIsCalled_ThenLogsError()
         {
             // Arrange
-            var input = new AddNewQuoteInput { Id = 1, AssetId = 2, Price = 100.5m, Date = DateTime.UtcNow };
+            var input = new AddNewQuoteInput { Id = Guid.NewGuid(), AssetId = 2, Price = 100.5m, Date = DateTime.UtcNow };
             _validatorMock
                 .Setup(v => v.ValidateAsync(input, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ValidationResult());
@@ -129,7 +129,7 @@ namespace UnitTests.Application.UseCases.Quote
                 l => l.Log(
                     LogLevel.Error,
                     It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("An error occurred while adding new quote")),
+                    It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("An error occurred while adding new quote")),
                     It.IsAny<Exception>(),
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()
                 ),
