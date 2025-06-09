@@ -28,7 +28,7 @@ namespace Infrastructure.MySql.Configuration
             builder.Property(q => q.Date)
                    .IsRequired()
                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                   .HasColumnName("date");
+                   .HasColumnName("date_time");
 
             builder.HasOne(q => q.Asset)
                    .WithMany(a => a.Quotes)
