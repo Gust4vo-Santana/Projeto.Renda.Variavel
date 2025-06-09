@@ -19,7 +19,7 @@ services:
     build:
       context: .
       dockerfile: Quotes.Consumer/Dockerfile
-    container_name: quotes-consumer-worker
+    container_name: quotes-consumer
     depends_on:
       - kafka
     environment:
