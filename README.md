@@ -40,9 +40,12 @@ O projeto aplica técnicas da Clean Architecture e Domain Driven Design (DDD), a
 * Entity Framework Core
 * MySQL
 * Kafka
-* Swagger (documentação da API - OpenAPI 3.0)
+* Prometheus
+* Serilog
+* Swagger
 * Docker
 * XUnit e Moq
+* FluentValidation
 
 ---
 
@@ -57,23 +60,24 @@ O projeto aplica técnicas da Clean Architecture e Domain Driven Design (DDD), a
    ```bash
    docker compose up --build
    ```
-3. Para testar as rotas da API e acessar a documentação no formato OpenAPI 3.0, acesse ``http://localhost:8080/swagger/index.html``
+3. Para testar as rotas da API, acesse ``http://localhost:8080/swagger/index.html``
+4. A documentação no modelo OpenAPI 3.0 em json encontra-se em [doc-open-api-3-0.json](doc-open-api-3-0.json)
 
 ## Banco de dados
 
 O script de criação do schema se encontra em [init.sql](init.sql), incluindo alguns comandos de ``INSERT`` para garantir testes mais realistas.
 
-* Para a Primary Key de todas as tabelas, o tipo de dado escolhido foi ``INT`` com auto-incremento na inserção de uma nova linha. Dessa forma, não é necessário implementar a lógica para gerar IDs únicos e, no contexto desse projeto, não há necessidade de tipos mais complexos como GUID.
+* Para a Primary Key de todas as tabelas (menos ``Quotes``), o tipo de dado escolhido foi ``INT`` com auto-incremento na inserção de uma nova linha. Dessa forma, não é necessário implementar a lógica para gerar IDs únicos e, no contexto desse projeto, não há necessidade de tipos mais complexos.
+* Especificamente na tabela ``Quotes``, o tipo escolhido para a chave primária foi o ``CHAR(36)``, para armazenamento de GUID, porque essa tabela está inserida no contexto do Worker, logo é interessante que o Id seja igual à Key da mensagem recebida do tópico Kafka (usualmente do tipo GUID) para realizar a validação de idempotência de forma mais próxima da realidade.
 * Para colunas referentes a valores numéricos - como ``price``, ``average_price``, ``quantity``, ``p_and_l`` - foi usado o tipo ``DECIMAL``, visto que essas colunas devem comportar valores de números racionais, com ponto flutuante.
 * Para colunas de data e hora, o tipo de dado escolhido foi o ``TIMESTAMP``, que inclui data e hora com grande precisão.
 * Para as demais colunas com valores nominais, como nome e email do usuário, ou nome e código de um ativo, foi escolhido o tipo ``VARCHAR``, que permite armazenar strings de tamanho variável dentro do limite definido para cada coluna.
 
-Dada a necessidade de consultar rapidamente todas as operações de um usuário em determinado ativo nos últimos 30 dias, é vantajoso criar 2 índices na tabela ``Operations``
+Dada a necessidade de consultar rapidamente todas as operações de um usuário em determinado ativo nos últimos 30 dias, é vantajoso criar um índice composto na tabela ``Operations`` sobre as colunas ``user_id, asset_id, date_time`` pois essas são as colunas envolvidas na cláusula ``WHERE``, logo o índice sobre elas tornaria a operação de busca muito mais eficiente. Além disso, o índice envolvendo a coluna ``date_time`` acelera o ``ORDER BY DESC`` pois faz com que os dados estejam ordenados previamente. A criação dos índices também está no arquivo [init.sql](init.sql).
 
-1. Índice na coluna ``user_id``
-2. Índice na coluna ``asset_id``
+A query que recupera as operações de um usuário em determinado ativo nos últimos 30 dias encontra-se em [select-operations.sql](select-operations.sql).
 
-Esses índices são interessantes porque as colunas utilizadas na operação de busca da query em questão são ``user_id`` e ``asset_id``. Índices nessas colunas tornarão a consulta mais rápida pois a busca sobre colunas indexadas é mais eficiente.
+A estrutura para atualização automática do P&L da posição dos clientes para determinado ativo quando uma nova cotação é inserida encontra-se em [update-position.sql](update-position.sql). Para isso, um trigger é disparado após todo novo ``INSERT`` na tabela ``Quotes`` executando o cálculo para atualizar a relação Lucro vs Perda levando em conta o novo preço do ativo.
 
 ## Testes automatizados
 
@@ -103,3 +107,10 @@ Outra técnica importante para otimizar o consumo de recursos é o balanceamento
 1. Round-robin: consiste em distribuir a carga entre as instâncias de forma uniforme, circular e sequencial. Ou seja, cada nova requisição é enviada à próxima instância da fila. Esse algoritmo tem como principal vantagem sua simplicidade de implementação e é mais indicado para cenários em que o desempenho dos servidores é similar, pois não leva em conta a latência de resposta de cada instância, e com isso pode sobrecarregar servidores mais lentos ou ocupados.
 
 2. Por latência: o balanceamento por latência tem como principal característica justamente cobrir o maior ponto fraco do round-robin, pois pois monitora constantemente o tempo de resposta das instâncias e envia cada nova requisição para a mais rápida naquele momento. Dessa forma, servidores lentos ou mais ocupados não sâo sobrecarregados e podem se recuperar de problemas de desempenho.
+
+## Observabilidade
+
+Neste projeto, a observabilidade foi implementada de 2 formas: logs estruturados e métricas.
+
+1. Logs estruturados: a aplicação implementa logs estruturados utilizando Serilog, facilitando a visualização e análise dos logs ao longo do fluxo de toda requisição no sistema. Esses logs são acessíveis via console ou acessando ``http://localhost:5341`` quando a aplicação está rodando. Esse formato torna os logs mais consistentes, pesquisáveis e úteis para identificar problemas.
+2. Métricas: o componente WebApi tem métricas por meio da integração com o Prometheus. Tratam-se de métricas básicas sobre as requisições http, mas que são capazes de fazer um primeiro diagnóstico de problemas com a aplicação, por exemplo monitorando a duração das requisições. As métricas são acessíveis em ``http://localhost:8080/metrics`` quando a aplicação está rodando.
