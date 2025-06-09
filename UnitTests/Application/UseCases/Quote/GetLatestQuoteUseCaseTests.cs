@@ -1,4 +1,4 @@
-﻿using Application.UseCases.Quote;
+﻿using Application.UseCases.Quote.GetLatestQuote;
 using FluentValidation;
 using FluentValidation.Results;
 using Infrastructure.MySql.Repositories.Quote;
