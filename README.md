@@ -80,3 +80,17 @@ Para os testes unitários, as tecnologias utilizadas foram o XUnit e o Moq. para
 Testes mutantes são um tipo de teste de software que tem o objetivo de garantir a qualidade de um conjunto de testes. Essa técnica consiste em aplicar mutaçõs no código para verificar se os testes existentes de fato são capazes de detectar bugs e erros de implementação.
 
 Para o caso de uso da média ponderada de preço de um ativo, uma possível mutação é alterar o cálculo, por exemplo trocando a parte final do método por ``totalQuantity / weightedSum``. Dessa forma, o retorno do método será diferente do esperado e, portanto, os testes unitários existentes devem ser capazes de detectar esse erro inserido pelo teste de mutação. Caso o teste unitário não falhasse com a versão mutada do código, o teste mutante registraria essa métrica.
+
+## Escalabilidade e performance
+
+### Auto-scaling horizontal
+
+Para a WebAPI, o auto-scaling horizontal consiste em, de forma automática, aumentar o número de instâncias do componente baseado em métricas como consumo de CPU, memória ou outras regras personalizadas, como time-based-scale. Nesse contexto, os principais provedores de nuvem, como a Azure por exemplo, fornecem ferramentas que executam esse escalonamento de forma fácil e automatizada por meio de configurações simples como arquivos ``azure-pipelines.yml``. Além disso, serviços de Kubernetes, como o AKS e o EKS, também são soluções muito robustas para implementar essa orquestração.
+
+### Balanceamento de carga
+
+Outra técnica importante para otimizar o consumo de recursos é o balanceamento de carga, que conta com diversas estratégias. Duas das principais são:
+
+1. Round-robin: consiste em distribuir a carga entre as instâncias de forma uniforme, circular e sequencial. Ou seja, cada nova requisição é enviada à próxima instância da fila. Esse algoritmo tem como principal vantagem sua simplicidade de implementação e é mais indicado para cenários em que o desempenho dos servidores é similar, pois não leva em conta a latência de resposta de cada instância, e com isso pode sobrecarregar servidores mais lentos ou ocupados.
+
+2. Por latência: o balanceamento por latência tem como principal característica justamente cobrir o maior ponto fraco do round-robin, pois pois monitora constantemente o tempo de resposta das instâncias e envia cada nova requisição para a mais rápida naquele momento. Dessa forma, servidores lentos ou mais ocupados não sâo sobrecarregados e podem se recuperar de problemas de desempenho.
