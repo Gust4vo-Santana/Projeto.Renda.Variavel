@@ -2,9 +2,17 @@ using Application.Shared.Installers;
 using Infrastructure.MySql.Installers;
 using Microsoft.AspNetCore.Mvc;
 using Prometheus;
+using Serilog;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 builder.Services.AddMySql(builder.Configuration);
 builder.Services.AddControllers();
