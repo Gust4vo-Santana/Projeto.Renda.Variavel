@@ -58,12 +58,14 @@ O projeto aplica técnicas da Clean Architecture e Domain Driven Design (DDD), a
    docker compose up --build
    ```
 3. Para testar as rotas da API e acessar a documentação no formato OpenAPI 3.0, acesse ``http://localhost:8080/swagger/index.html``
+4. A documentação no modelo OpenAPI 3.0 em json encontra-se em [doc-open-api-3-0.json](doc-open-api-3-0.json)
 
 ## Banco de dados
 
 O script de criação do schema se encontra em [init.sql](init.sql), incluindo alguns comandos de ``INSERT`` para garantir testes mais realistas.
 
-* Para a Primary Key de todas as tabelas, o tipo de dado escolhido foi ``INT`` com auto-incremento na inserção de uma nova linha. Dessa forma, não é necessário implementar a lógica para gerar IDs únicos e, no contexto desse projeto, não há necessidade de tipos mais complexos como GUID.
+* Para a Primary Key de todas as tabelas (menos ``Quotes``), o tipo de dado escolhido foi ``INT`` com auto-incremento na inserção de uma nova linha. Dessa forma, não é necessário implementar a lógica para gerar IDs únicos e, no contexto desse projeto, não há necessidade de tipos mais complexos.
+* Especificamente na tabela ``Quotes``, o tipo escolhido para a chave primária foi o ``CHAR(36)``, para armazenamento de GUID, porque essa tabela está inserida no contexto do Worker, logo é interessante que o Id seja igual à Key da mensagem recebida do tópico Kafka (usualmente do tipo GUID) para realizar a validação de idempotência de forma mais próxima da realidade.
 * Para colunas referentes a valores numéricos - como ``price``, ``average_price``, ``quantity``, ``p_and_l`` - foi usado o tipo ``DECIMAL``, visto que essas colunas devem comportar valores de números racionais, com ponto flutuante.
 * Para colunas de data e hora, o tipo de dado escolhido foi o ``TIMESTAMP``, que inclui data e hora com grande precisão.
 * Para as demais colunas com valores nominais, como nome e email do usuário, ou nome e código de um ativo, foi escolhido o tipo ``VARCHAR``, que permite armazenar strings de tamanho variável dentro do limite definido para cada coluna.
