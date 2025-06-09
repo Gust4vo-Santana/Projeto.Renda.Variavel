@@ -7,7 +7,7 @@ using Application.UseCases.Position.GetGlobalPosition;
 using Application.UseCases.Position.GetPositionByAsset;
 using Application.UseCases.Position.GetTopUsersWithHighestPositions;
 using Application.UseCases.Position.GetTotalInvestedByAsset;
-using Application.UseCases.Quote;
+using Application.UseCases.Quote.GetLatestQuote;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Shared.Installers
