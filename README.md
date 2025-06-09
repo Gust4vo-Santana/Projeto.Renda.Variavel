@@ -73,9 +73,11 @@ O script de criação do schema se encontra em [init.sql](init.sql), incluindo a
 * Para colunas de data e hora, o tipo de dado escolhido foi o ``TIMESTAMP``, que inclui data e hora com grande precisão.
 * Para as demais colunas com valores nominais, como nome e email do usuário, ou nome e código de um ativo, foi escolhido o tipo ``VARCHAR``, que permite armazenar strings de tamanho variável dentro do limite definido para cada coluna.
 
-Dada a necessidade de consultar rapidamente todas as operações de um usuário em determinado ativo nos últimos 30 dias, é vantajoso criar um índice composto na tabela ``Operations`` sobre as colunas ``user_id, asset_id, date_time`` pois essas são as colunas envolvidas na cláusula ``WHERE``, logo o índice sobre elas tornaria a operação de busca muito mais eficiente. Além disso, o índice envolvendo a coluna ``date_time`` acelera o ``ORDER BY DESC`` pois faz com que os dados estejam ordenados previamente.
+Dada a necessidade de consultar rapidamente todas as operações de um usuário em determinado ativo nos últimos 30 dias, é vantajoso criar um índice composto na tabela ``Operations`` sobre as colunas ``user_id, asset_id, date_time`` pois essas são as colunas envolvidas na cláusula ``WHERE``, logo o índice sobre elas tornaria a operação de busca muito mais eficiente. Além disso, o índice envolvendo a coluna ``date_time`` acelera o ``ORDER BY DESC`` pois faz com que os dados estejam ordenados previamente. A criação dos índices também está no arquivo [init.sql](init.sql).
 
-Esses índices são interessantes porque as colunas utilizadas na operação de busca da query em questão são ``user_id`` e ``asset_id``. Índices nessas colunas tornarão a consulta mais rápida pois a busca sobre colunas indexadas é mais eficiente.
+A query que recupera as operações de um usuário em determinado ativo nos últimos 30 dias encontra-se em [select-operations.sql](select-operations.sql).
+
+A estrutura para atualização automática do P&L da posição dos clientes para determinado ativo quando uma nova cotação é inserida encontra-se em [update-position.sql](update-position.sql). Para isso, um trigger é disparado após todo novo ``INSERT`` na tabela ``Quotes`` executando o cálculo para atualizar a relação Lucro vs Perda levando em conta o novo preço do ativo.
 
 ## Testes automatizados
 
