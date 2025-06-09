@@ -49,16 +49,7 @@ CREATE TABLE Positions (
 	FOREIGN KEY (asset_id) REFERENCES Assets(id)
 );
 
-CREATE INDEX idx_user_id ON Operations(user_id);
-CREATE INDEX idx_asset_id ON Operations(asset_id);
-
-INSERT INTO Users (name, email, brokerage_fee) VALUES 
-('Alice', 'alice@example.com', 5.00),
-('Bob', 'bob@example.com', 4.50);
-
-INSERT INTO Assets (code, name) VALUES 
-('PETR4', 'Petrobras PN'),
-('VALE3', 'Vale ON');
+CREATE INDEX idx_operations_user_asset_date ON Operations(user_id, asset_id, date_time DESC);
 
 INSERT INTO Users (name, email, brokerage_fee) VALUES 
 ('Alice', 'alice@example.com', 5.00),
