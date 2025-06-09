@@ -107,3 +107,10 @@ Outra técnica importante para otimizar o consumo de recursos é o balanceamento
 1. Round-robin: consiste em distribuir a carga entre as instâncias de forma uniforme, circular e sequencial. Ou seja, cada nova requisição é enviada à próxima instância da fila. Esse algoritmo tem como principal vantagem sua simplicidade de implementação e é mais indicado para cenários em que o desempenho dos servidores é similar, pois não leva em conta a latência de resposta de cada instância, e com isso pode sobrecarregar servidores mais lentos ou ocupados.
 
 2. Por latência: o balanceamento por latência tem como principal característica justamente cobrir o maior ponto fraco do round-robin, pois pois monitora constantemente o tempo de resposta das instâncias e envia cada nova requisição para a mais rápida naquele momento. Dessa forma, servidores lentos ou mais ocupados não sâo sobrecarregados e podem se recuperar de problemas de desempenho.
+
+## Observabilidade
+
+Neste projeto, a observabilidade foi implementada de 2 formas: logs estruturados e métricas.
+
+1. Logs estruturados: a aplicação implementa logs estruturados utilizando Serilog, facilitando a visualização e análise dos logs ao longo do fluxo de toda requisição no sistema. Esses logs são acessíveis via console ou acessando ``http://localhost:5341`` quando a aplicação está rodando. Esse formato torna os logs mais consistentes, pesquisáveis e úteis para identificar problemas.
+2. Métricas: o componente WebApi tem métricas por meio da integração com o Prometheus. Tratam-se de métricas básicas sobre as requisições http, mas que são capazes de fazer um primeiro diagnóstico de problemas com a aplicação, por exemplo monitorando a duração das requisições. As métricas são acessíveis em ``http://localhost:8080/metrics`` quando a aplicação está rodando.
