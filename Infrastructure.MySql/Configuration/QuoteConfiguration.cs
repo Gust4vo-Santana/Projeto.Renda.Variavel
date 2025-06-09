@@ -13,7 +13,6 @@ namespace Infrastructure.MySql.Configuration
             builder.HasKey(q => q.Id);
 
             builder.Property(q => q.Id)
-                   .ValueGeneratedOnAdd()
                    .HasColumnName("id");
 
             builder.Property(q => q.AssetId)

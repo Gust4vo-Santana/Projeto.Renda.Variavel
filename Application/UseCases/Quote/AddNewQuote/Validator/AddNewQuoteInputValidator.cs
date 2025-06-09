@@ -15,8 +15,7 @@ namespace Application.UseCases.Quote.AddNewQuote.Validator
         private void ValidateId()
         {
             RuleFor(x => x.Id)
-                .NotEmpty().WithMessage("Id must not be empty.")
-                .GreaterThan(0).WithMessage("Id must be greater than 0.");
+                .NotEmpty().WithMessage("Id must not be empty.");
         }
 
         private void ValidateAssetId()

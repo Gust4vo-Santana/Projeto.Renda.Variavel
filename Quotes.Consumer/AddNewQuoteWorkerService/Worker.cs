@@ -39,7 +39,7 @@ namespace Quotes.Consumer.AddNewQuoteWorkerService
                 while (!stoppingToken.IsCancellationRequested)
                 {
                     var result = consumer.Consume(stoppingToken);
-                    var message = result.Message.Value;
+                    var message = result.Message;
 
                     _logger.LogInformation("Received message from topic {Topic} | Partition {Partition} | Offset {Offset}",
                         result.Topic, result.Partition, result.Offset);
@@ -72,7 +72,7 @@ namespace Quotes.Consumer.AddNewQuoteWorkerService
             }
         }
 
-        private IConsumer<Ignore, AddNewQuoteMessage> BuildConsumer()
+        private IConsumer<Guid, AddNewQuoteMessage> BuildConsumer()
         {
             var config = new ConsumerConfig
             {
@@ -81,19 +81,19 @@ namespace Quotes.Consumer.AddNewQuoteWorkerService
                 AutoOffsetReset = AutoOffsetReset.Earliest
             };
 
-            return new ConsumerBuilder<Ignore, AddNewQuoteMessage>(config)
+            return new ConsumerBuilder<Guid, AddNewQuoteMessage>(config)
                 .SetValueDeserializer(new MessageDeserializer<AddNewQuoteMessage>())
                 .Build();
         }
 
-        private IProducer<Ignore, AddNewQuoteMessage> BuildDlqProducer()
+        private IProducer<Guid, AddNewQuoteMessage> BuildDlqProducer()
         {
             var dlqConfig = new ProducerConfig
             {
                 BootstrapServers = _configuration["Kafka:BootstrapServers"]
             };
 
-            return new ProducerBuilder<Ignore, AddNewQuoteMessage>(dlqConfig)
+            return new ProducerBuilder<Guid, AddNewQuoteMessage>(dlqConfig)
                 .SetValueSerializer(new MessageSerializer<AddNewQuoteMessage>())
                 .Build();
         }

@@ -2,7 +2,7 @@
 {
     public class Quote
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
         public long AssetId { get; set; }
         public decimal Price { get; set; }
         public DateTime Date { get; set; }

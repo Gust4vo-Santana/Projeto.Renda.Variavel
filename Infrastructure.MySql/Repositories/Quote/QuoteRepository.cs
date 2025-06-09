@@ -26,7 +26,7 @@ namespace Infrastructure.MySql.Repositories.Quote
             await _context.Quotes.AddAsync(newQuote, cancellationToken);
         }
 
-        public async Task<bool> ExistsAsync(long id, CancellationToken cancellationToken)
+        public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken)
         {
             return await _context.Quotes.AnyAsync(q => q.Id == id, cancellationToken);
         }

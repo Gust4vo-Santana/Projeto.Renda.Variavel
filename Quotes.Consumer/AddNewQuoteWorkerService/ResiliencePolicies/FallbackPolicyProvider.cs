@@ -7,8 +7,8 @@ namespace Quotes.Consumer.AddNewQuoteWorkerService.ResiliencePolicies
 {
     public static class FallbackPolicyProvider
     {
-        public static AsyncFallbackPolicy GetFallbackPolicy(AddNewQuoteMessage originalMessage, 
-                                                            IProducer<Ignore, AddNewQuoteMessage> dlqProducer,
+        public static AsyncFallbackPolicy GetFallbackPolicy(Message<Guid, AddNewQuoteMessage> originalMessage, 
+                                                            IProducer<Guid, AddNewQuoteMessage> dlqProducer,
                                                             ILogger logger, 
                                                             string dlqTopic, 
                                                             CancellationToken stoppingToken)
@@ -18,10 +18,7 @@ namespace Quotes.Consumer.AddNewQuoteWorkerService.ResiliencePolicies
                              fallbackAction: async (stoppingToken) =>
                              {
                                  await dlqProducer.ProduceAsync(dlqTopic, 
-                                                                new Message<Ignore, AddNewQuoteMessage> 
-                                                                { 
-                                                                    Value = originalMessage 
-                                                                }, stoppingToken);
+                                                                originalMessage, stoppingToken);
                                  logger.LogWarning("An error occurred, message sent to DLQ: {@Message}", originalMessage);
                              },
                              onFallbackAsync: async (exception) =>

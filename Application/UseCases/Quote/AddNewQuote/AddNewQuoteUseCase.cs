@@ -49,7 +49,7 @@ namespace Application.UseCases.Quote.AddNewQuote
             }
         }
 
-        private async Task CheckIdempotency(long id, CancellationToken cancellationToken)
+        private async Task CheckIdempotency(Guid id, CancellationToken cancellationToken)
         {
             var isIdAlreadyUsed = await _quoteRepository.ExistsAsync(id, cancellationToken);
 

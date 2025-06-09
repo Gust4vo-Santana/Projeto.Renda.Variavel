@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Application.UseCases.Quote.AddNewQuote.Validator;
+using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.UseCases.Quote.AddNewQuote
 {
@@ -6,7 +8,8 @@ namespace Application.UseCases.Quote.AddNewQuote
     {
         public static IServiceCollection AddAddNewQuoteUseCase(this IServiceCollection services)
         {
-            services.AddScoped<IAddNewQuoteUseCase, AddNewQuoteUseCase>();
+            services.AddScoped<IAddNewQuoteUseCase, AddNewQuoteUseCase>()
+                    .AddSingleton<IValidator<AddNewQuoteInput>, AddNewQuoteInputValidator>();
             return services;
         }
     }

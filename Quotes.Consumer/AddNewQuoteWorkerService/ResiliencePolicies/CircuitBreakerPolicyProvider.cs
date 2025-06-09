@@ -9,8 +9,8 @@ namespace Quotes.Consumer.AddNewQuoteWorkerService.ResiliencePolicies
         {
             return Policy.Handle<Exception>()
                          .CircuitBreakerAsync(
-                            exceptionsAllowedBeforeBreaking: 5,
-                            durationOfBreak: TimeSpan.FromSeconds(30),
+                            exceptionsAllowedBeforeBreaking: exceptionsAllowedBeforeBreaking,
+                            durationOfBreak: TimeSpan.FromSeconds(durationOfBreakSeconds),
                             onBreak: (exception, duration) =>
                             {
                                 logger.LogError(exception, "Circuit breaker activated due to error: {Error} for {Duration} minutes", exception.Message, duration.TotalMinutes);
