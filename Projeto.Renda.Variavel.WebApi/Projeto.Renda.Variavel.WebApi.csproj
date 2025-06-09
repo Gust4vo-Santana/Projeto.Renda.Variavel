@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
-    <ProjectReference Include="..\Infrastructure\Infrastructure.MySql.csproj" />
+    <ProjectReference Include="..\Infrastructure.MySql\Infrastructure.MySql.csproj" />
   </ItemGroup>
 
 </Project>
