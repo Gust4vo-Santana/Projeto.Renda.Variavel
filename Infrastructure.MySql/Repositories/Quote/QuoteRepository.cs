@@ -20,5 +20,10 @@ namespace Infrastructure.MySql.Repositories.Quote
                 .OrderByDescending(q => q.Date)
                 .FirstOrDefaultAsync(cancellationToken);
         }
+
+        public async Task AddNewQuote(QuoteEntity newQuote, CancellationToken cancellationToken)
+        {
+            await _context.Quotes.AddAsync(newQuote, cancellationToken);
+        }
     }
 }
