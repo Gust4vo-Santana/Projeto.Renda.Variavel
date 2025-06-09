@@ -3,7 +3,6 @@ using Application.UseCases.Operation.GetGlobalAveragePriceByAsset;
 using Application.UseCases.Operation.GetTopBrokerageFeePayers;
 using Application.UseCases.Operation.GetTotalBrokerageFee;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Razor.TagHelpers;
 using Projeto.Renda.Variavel.WebApi.Controllers.ApiResponse;
 using Projeto.Renda.Variavel.WebApi.Dtos;
 using Projeto.Renda.Variavel.WebApi.Mappers;
@@ -13,7 +12,7 @@ namespace Projeto.Renda.Variavel.WebApi.Controllers
 {
     [ApiVersion("1.0")]
     [ApiController]
-    [Route("api/v{apiVersion:apiVersion}/position")]
+    [Route("api/v{apiVersion:apiVersion=1.0}/operation")]
     public class OperationController : ControllerBase
     {
         private readonly IGetBrokerageFeeByUserUseCase _getBrokerageFeeByUserUseCase;
@@ -36,7 +35,7 @@ namespace Projeto.Renda.Variavel.WebApi.Controllers
         }
 
         /// <summary>
-        /// Retorna o total de corretagem pago pelo usuário especificado pelo ID
+        /// Retorna o total de corretagem pago pelo usuario especificado pelo ID
         /// </summary>
         [HttpGet("brokerage-fee-by-user")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -94,7 +93,7 @@ namespace Projeto.Renda.Variavel.WebApi.Controllers
         }
 
         /// <summary>
-        ///  Retorna o preço médio ponderado de aquisição de um ativo
+        ///  Retorna o preco medio ponderado de aquisicao de um ativo
         /// </summary>
         [HttpGet("global-average-price")]
         [Consumes(MediaTypeNames.Application.Json)]

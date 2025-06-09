@@ -9,7 +9,7 @@ namespace Projeto.Renda.Variavel.WebApi.Controllers
 {
     [ApiVersion("1.0")]
     [ApiController]
-    [Route("api/v{apiVersion:apiVersion}/quote")]
+    [Route("api/v{apiVersion:apiVersion=1.0}/quote")]
     public class QuoteController : ControllerBase
     {
         private readonly IGetLatestQuoteUseCase _getLatestQuoteUseCase;
@@ -22,7 +22,7 @@ namespace Projeto.Renda.Variavel.WebApi.Controllers
         }
 
         /// <summary>
-        /// Retorna a última cotação de um ativo especificado pelo ID
+        /// Retorna a ultima cotacao de um ativo especificado pelo ID
         /// </summary>
         [HttpGet("latest-quote")]
         [Consumes(MediaTypeNames.Application.Json)]

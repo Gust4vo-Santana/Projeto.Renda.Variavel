@@ -13,7 +13,7 @@ namespace Projeto.Renda.Variavel.WebApi.Controllers
 {
     [ApiVersion("1.0")]
     [ApiController]
-    [Route("api/v{apiVersion:apiVersion}/position")]
+    [Route("api/v{apiVersion:apiVersion=1.0}/position")]
     public class PositionController : ControllerBase
     {
         private readonly IGetTotalInvestedByAssetUseCase _getTotalInvestedByAssetUseCase;
@@ -39,7 +39,7 @@ namespace Projeto.Renda.Variavel.WebApi.Controllers
         }
 
         /// <summary>
-        /// Retorna o total investido por um usuário em um ativo específico
+        /// Retorna o total investido por um usuario em um ativo especifico
         /// </summary>
         [HttpGet("total-by-asset")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -67,7 +67,7 @@ namespace Projeto.Renda.Variavel.WebApi.Controllers
         }
 
         /// <summary>
-        /// Retorna a posição global do usuário especificado pelo ID
+        /// Retorna a posicao global do usuario especificado pelo ID
         /// </summary>
         [HttpGet("global-position")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -96,7 +96,7 @@ namespace Projeto.Renda.Variavel.WebApi.Controllers
         }
 
         /// <summary>
-        /// Retorna o preço médio de um ativo pago pelo usuário especificado pelo ID
+        /// Retorna o preço medio de um ativo pago pelo usuario especificado pelo ID
         /// </summary>
         [HttpGet("average-price")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -125,7 +125,7 @@ namespace Projeto.Renda.Variavel.WebApi.Controllers
         }
 
         /// <summary>
-        /// Retorna a posição do cliente para o ativo especificado
+        /// Retorna a posicao do cliente para o ativo especificado
         /// </summary>
         [HttpGet("position-by-asset")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -154,7 +154,7 @@ namespace Projeto.Renda.Variavel.WebApi.Controllers
         }
 
         /// <summary>
-        /// Retorna os top 10 usuários com maiores posições, levando em conta o valor total investido em todas as posições de cada cliente
+        /// Retorna os top 10 usuários com maiores posicoes, levando em conta o valor total investido em todas as posicoes de cada cliente
         /// </summary>
         [HttpGet("top-users")]
         [Consumes(MediaTypeNames.Application.Json)]
