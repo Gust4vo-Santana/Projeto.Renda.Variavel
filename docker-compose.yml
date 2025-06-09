@@ -8,11 +8,24 @@ services:
       - "8080:8080"
     depends_on:
       - mysql
-      - kafka
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=server=mysql;port=3306;user=root;password=root;database=renda_variavel
       - Kafka__BootstrapServers=kafka:9092
+    networks:
+      - app-network
+
+  worker:
+    build:
+      context: .
+      dockerfile: Quotes.Consumer/Dockerfile
+    container_name: quotes-consumer-worker
+    depends_on:
+      - kafka
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Kafka__BootstrapServers=kafka:9092
+      - Kafka__Topic=quotes-topic
     networks:
       - app-network
 
@@ -52,6 +65,19 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - app-network
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    ports:
+      - "8081:8080"
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
+    depends_on:
+      - kafka
     networks:
       - app-network
 
