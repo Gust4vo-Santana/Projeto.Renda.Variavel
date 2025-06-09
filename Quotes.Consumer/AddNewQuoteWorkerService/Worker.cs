@@ -1,5 +1,8 @@
 using Application.UseCases.Quote.AddNewQuote;
 using Confluent.Kafka;
+using Polly;
+using Quotes.Consumer.AddNewQuoteWorkerService.Message;
+using Quotes.Consumer.AddNewQuoteWorkerService.ResiliencePolicies;
 
 namespace Quotes.Consumer.AddNewQuoteWorkerService
 {
@@ -21,19 +24,18 @@ namespace Quotes.Consumer.AddNewQuoteWorkerService
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var topic = _configuration["Kafka:Topic"];
+            var dlqTopic = _configuration["Kafka:DeadLetterQueueTopic"];
 
-            var config = new ConsumerConfig
-            {
-                BootstrapServers = _configuration["Kafka:BootstrapServers"],
-                GroupId = "quotes-worker-group",
-                AutoOffsetReset = AutoOffsetReset.Earliest
-            };
-
-            using var consumer = BuildConsumer(config);
+            using var consumer = BuildConsumer();
             consumer.Subscribe(topic);
+
+            using var dlqProducer = BuildDlqProducer();
 
             try
             {
+                var retryPolicy = RetryPolicyProvider.GetRetryPolicy(5, 1, _logger);
+                var circuitBreakerPolicy = CircuitBreakerPolicyProvider.GetCircuitBreakerPolicy(5, 30, _logger);
+
                 while (!stoppingToken.IsCancellationRequested)
                 {
                     var result = consumer.Consume(stoppingToken);
@@ -42,11 +44,17 @@ namespace Quotes.Consumer.AddNewQuoteWorkerService
                     _logger.LogInformation("Received message from topic {Topic} | Partition {Partition} | Offset {Offset}",
                         result.Topic, result.Partition, result.Offset);
 
+                    var policy = Policy.WrapAsync(retryPolicy,
+                                                  circuitBreakerPolicy,
+                                                  FallbackPolicyProvider.GetFallbackPolicy(message, dlqProducer, _logger, dlqTopic!, stoppingToken));
                     try
                     {
-                        await _addNewQuoteUseCase.ExecuteAsync(message.MapToInput(), stoppingToken);
+                        await policy.ExecuteAsync(async () =>
+                        {
+                            await _addNewQuoteUseCase.ExecuteAsync(message.MapToInput(), stoppingToken);
 
-                        _logger.LogInformation("Successfully processed quote: {@Quote}", message);
+                            _logger.LogInformation("Successfully processed quote: {@Quote}", message);
+                        });
                     }
                     catch (Exception ex)
                     {
@@ -64,10 +72,29 @@ namespace Quotes.Consumer.AddNewQuoteWorkerService
             }
         }
 
-        private IConsumer<Ignore, AddNewQuoteMessage> BuildConsumer(ConsumerConfig config)
+        private IConsumer<Ignore, AddNewQuoteMessage> BuildConsumer()
         {
+            var config = new ConsumerConfig
+            {
+                BootstrapServers = _configuration["Kafka:BootstrapServers"],
+                GroupId = "quotes-worker-group",
+                AutoOffsetReset = AutoOffsetReset.Earliest
+            };
+
             return new ConsumerBuilder<Ignore, AddNewQuoteMessage>(config)
                 .SetValueDeserializer(new MessageDeserializer<AddNewQuoteMessage>())
+                .Build();
+        }
+
+        private IProducer<Ignore, AddNewQuoteMessage> BuildDlqProducer()
+        {
+            var dlqConfig = new ProducerConfig
+            {
+                BootstrapServers = _configuration["Kafka:BootstrapServers"]
+            };
+
+            return new ProducerBuilder<Ignore, AddNewQuoteMessage>(dlqConfig)
+                .SetValueSerializer(new MessageSerializer<AddNewQuoteMessage>())
                 .Build();
         }
     }

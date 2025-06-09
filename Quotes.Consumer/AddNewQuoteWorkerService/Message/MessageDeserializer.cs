@@ -1,7 +1,7 @@
 ﻿using Confluent.Kafka;
 using System.Text.Json;
 
-namespace Quotes.Consumer.AddNewQuoteWorkerService
+namespace Quotes.Consumer.AddNewQuoteWorkerService.Message
 {
     public class MessageDeserializer<T> : IDeserializer<T>
     {

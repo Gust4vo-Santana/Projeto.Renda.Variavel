@@ -1,6 +1,6 @@
 ﻿using Application.UseCases.Quote.AddNewQuote;
 
-namespace Quotes.Consumer.AddNewQuoteWorkerService
+namespace Quotes.Consumer.AddNewQuoteWorkerService.Message
 {
     public static class AddNewQuoteMessageMapper
     {

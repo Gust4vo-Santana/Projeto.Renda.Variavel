@@ -1,10 +1,11 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-COPY Quotes.Consumer.csproj ./
-RUN dotnet restore Quotes.Consumer.csproj
+COPY . .
 
-COPY . ./
+WORKDIR /src/Quotes.Consumer
+RUN dotnet restore
+
 RUN dotnet publish Quotes.Consumer.csproj -c Release -o /app/out
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
